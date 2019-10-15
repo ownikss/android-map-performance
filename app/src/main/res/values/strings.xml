@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Clusters performance</string>
+    <string name="without_clusters">Без кластеров</string>
+    <string name="clusters">Кластеры</string>
+</resources>
