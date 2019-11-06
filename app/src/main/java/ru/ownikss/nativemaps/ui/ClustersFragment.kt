@@ -64,15 +64,15 @@ class ClustersFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(p0: GoogleMap?) {
         _map = p0
-        if (_map != null) {
-            getMap().moveCamera(getDefaultCameraPosition())
+        if (p0 != null) {
+            p0.moveCamera(getDefaultCameraPosition())
+            if (useClusters) {
+                mClusterManager = ClusterManager(activity, p0)
+                p0.setOnCameraIdleListener(mClusterManager)
+                p0.setOnMarkerClickListener(mClusterManager)
+            }
+            addMarkers()
         }
-        if (useClusters) {
-            mClusterManager = ClusterManager(activity, getMap())
-            getMap().setOnCameraIdleListener(mClusterManager)
-            getMap().setOnMarkerClickListener(mClusterManager)
-        }
-        addMarkers()
     }
 
     override fun onCreateView(
@@ -101,9 +101,9 @@ class ClustersFragment : Fragment(), OnMapReadyCallback {
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                mClusterManager!!.clearItems()
+                mClusterManager?.clearItems()
                 addMarkers()
-                getMap().moveCamera(getDefaultCameraPosition())
+                getMap()?.moveCamera(getDefaultCameraPosition())
             }
         })
         binding.toolbar.setNavigationOnClickListener { goBack() }
@@ -113,20 +113,19 @@ class ClustersFragment : Fragment(), OnMapReadyCallback {
         NavHostFragment.findNavController(this).popBackStack()
     }
 
-    private fun getMap(): GoogleMap {
-        return _map!!
+    private fun getMap(): GoogleMap? {
+        return _map
     }
-
 
     private fun addMarker(location: LatLng) {
         if (useClusters) {
-            mClusterManager!!.addItem(
+            mClusterManager?.addItem(
                 Cluster(location.latitude, location.longitude)
             )
         } else {
             val obj = MarkerOptions()
             obj.position(location)
-            getMap().addMarker(obj)
+            getMap()?.addMarker(obj)
         }
     }
 
